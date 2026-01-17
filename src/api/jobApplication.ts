@@ -55,6 +55,12 @@ export async function createJobApplication({
 }
 
 //GET all the job application
+export const getJobApplications = async (): Promise<JobApplicationEntry[]> => {
+  const { data } = await api.get('/job-application');
+  return data.data; // backend returns { data: [...], nextCursor }
+};
+
+// GET job applications with pagination (for infinite scroll if needed later)
 interface JobApplicationPageData {
   data: JobApplicationEntry[];
   nextCursor: string | null;
@@ -66,12 +72,11 @@ interface GetJobApplicationParams {
   search?: string;
 }
 
-export const getJobApplication = async ({
+export const getJobApplicationPaginated = async ({
   cursor,
   limit = 9,
   search = '',
 }: GetJobApplicationParams): Promise<JobApplicationPageData> => {
-  // await new Promise((resolve) => setTimeout(resolve, 3000));
   const { data } = await api.get('/job-application', {
     params: { cursor, limit, search },
   });

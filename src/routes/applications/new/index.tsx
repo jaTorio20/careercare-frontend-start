@@ -1,41 +1,49 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createJobApplication } from '@/api/jobApplication'
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { toast } from 'sonner';
-import ResumeFileInput from '@/components/Job-Application/ResumeFileInput';
+import ProtectedRoute from '@/components/ProtectedRoute'
+import { toast } from 'sonner'
+import ResumeFileInput from '@/components/Job-Application/ResumeFileInput'
 
 export const Route = createFileRoute('/applications/new/')({
-    component: () => (
-      <ProtectedRoute>
-       <NewJobApplication/>
-      </ProtectedRoute>
-    ),
+  component: () => (
+    <ProtectedRoute>
+      <NewJobApplication />
+    </ProtectedRoute>
+  ),
 })
 
 function NewJobApplication() {
-  const navigate = useNavigate();
-  const [file, setFile] = useState<File | null>(null);
-  const [companyName, setCompanyName] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
-  const [jobLink, setJobLink] = useState('');
-  const [jobDescription, setJobDescription] = useState('');
-  const [status, setStatus] = useState<'applied' | 'interview' | 'offer' | 'rejected' | 'accepted'>('applied');
-  const [location, setLocation] = useState<'remote' | 'onsite' | 'hybrid'>('remote');
-  const [notes, setNotes] = useState('');
-  const [salaryRange, setSalaryRange] = useState('');
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [file, setFile] = useState<File | null>(null)
+  const [companyName, setCompanyName] = useState('')
+  const [jobTitle, setJobTitle] = useState('')
+  const [jobLink, setJobLink] = useState('')
+  const [jobDescription, setJobDescription] = useState('')
+  const [status, setStatus] = useState<
+    'applied' | 'interview' | 'offer' | 'rejected' | 'accepted'
+  >('applied')
+  const [location, setLocation] = useState<'remote' | 'onsite' | 'hybrid'>(
+    'remote',
+  )
+  const [notes, setNotes] = useState('')
+  const [salaryRange, setSalaryRange] = useState('')
 
-  const { mutateAsync, isPending } = useMutation({ //call mutateAsync if we submit a form
+  const { mutateAsync, isPending } = useMutation({
+    //call mutateAsync if we submit a form
     mutationFn: createJobApplication,
-    onSuccess: () => {
-      navigate({ to: '/applications'}) //navigate is where the form navigate after submit
+    onSuccess: async () => {
+      // Invalidate and refetch applications query
+      await queryClient.invalidateQueries({ queryKey: ['applications'] })
       toast.success('Added successfully!')
+      navigate({ to: '/applications' })
     },
     onError: (err: any) => {
-      toast.error( err?.message || "An unexpected error occurred");
-    }
-  });
+      toast.error(err?.message || 'An unexpected error occurred')
+    },
+  })
 
   const handleSubmit = async (e:React.FormEvent) => {
     e.preventDefault();

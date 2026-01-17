@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link, notFound } from '@tanstack/react-router'
 import { getDetailApplication, getDownloadFile, deleteJobApplication } from '@/api/jobApplication'
-import { queryOptions, useSuspenseQuery, useMutation} from '@tanstack/react-query'
+import { queryOptions, useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { StatusBadge } from '@/components/Job-Application/StatusBadge'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
@@ -37,10 +37,12 @@ function ApplicationDetailsPage() {
     const {applicationId} = Route.useParams();
     const {data: jobApplication} = useSuspenseQuery(jobApplicationQueryOptions(applicationId))
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const { mutateAsync: deleteMutate, isPending } = useMutation({
       mutationFn: () => deleteJobApplication(applicationId),
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['applications'] })
         navigate({to: '/applications'});
         toast.success('Deleted successfully!')
       },

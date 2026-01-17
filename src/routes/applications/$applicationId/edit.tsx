@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, notFound, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { updateJobApplication, getDetailApplication } from '@/api/jobApplication'
-import { useMutation, useSuspenseQuery, queryOptions} from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery, queryOptions, useQueryClient } from '@tanstack/react-query'
 import { ResumeViewer } from '@/components/Job-Application/ResumeViewer'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
@@ -41,6 +41,7 @@ export const Route = createFileRoute('/applications/$applicationId/edit')({
 
 function ApplicationEditPage() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { applicationId } = Route.useParams();
     const { data: jobApplication } = useSuspenseQuery(jobApplicationQueryOptions(applicationId));
   
@@ -69,9 +70,10 @@ function ApplicationEditPage() {
         salaryRange,
         file: resumeFile ?? undefined,
       }),
-      onSuccess: (updated) => {
+      onSuccess: async (updated) => {
         setResumeFileUrl(updated.resumeFile);
         setResumeFileName(updated.originalName);
+        await queryClient.invalidateQueries({ queryKey: ['applications'] })
         navigate({
           to: '/applications/$applicationId',
           params: { applicationId: jobApplication._id}
