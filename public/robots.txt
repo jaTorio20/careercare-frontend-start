@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://your-domain.vercel.app/sitemap.xml
+Sitemap: https://careercare-ai-automation.vercel.app/sitemap.xml

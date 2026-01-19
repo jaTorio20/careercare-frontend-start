@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://your-domain.vercel.app/</loc>
+    <loc>https://careercare-ai-automation.vercel.app/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://your-domain.vercel.app/resumes</loc>
+    <loc>https://careercare-ai-automation.vercel.app/resumes</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.vercel.app/resumes/analyze</loc>
+    <loc>https://careercare-ai-automation.vercel.app/resumes/analyze</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.vercel.app/cover-letter</loc>
+    <loc>https://careercare-ai-automation.vercel.app/cover-letter</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.vercel.app/applications</loc>
+    <loc>https://careercare-ai-automation.vercel.app/applications</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.vercel.app/interview/sessions</loc>
+    <loc>https://careercare-ai-automation.vercel.app/interview/sessions</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.vercel.app/login</loc>
+    <loc>https://careercare-ai-automation.vercel.app/login</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://your-domain.vercel.app/register</loc>
+    <loc>https://careercare-ai-automation.vercel.app/register</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
