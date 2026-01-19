@@ -16,9 +16,18 @@ const resumeQueryOptions = () => {
 
 export const Route = createFileRoute('/resumes/')({
   head: () => ({
+    title: 'Resumes | CareerCare',
     meta: [
-      { title: 'List of resumes', content: 'List of uploaded resumes' },
-    ],  
+      { name: 'description', content: 'List of your uploaded resumes.' },
+      { property: 'og:title', content: 'Resumes | CareerCare' },
+      { property: 'og:description', content: 'List of your uploaded resumes.' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:image', content: '/og-image.png' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: 'Resumes | CareerCare' },
+      { name: 'twitter:description', content: 'List of your uploaded resumes.' },
+      { name: 'twitter:image', content: '/og-image.png' },
+    ],
   }),
 
   // component: ResumesPage,
@@ -29,18 +38,10 @@ export const Route = createFileRoute('/resumes/')({
       </Suspense>
     </ProtectedRoute>
   ),
-
-  // loader: async ({ context: { queryClient } }) => { //prefetching for faster load
-  //   return queryClient.ensureQueryData(resumeQueryOptions())
-  // }
 })
 
 function ResumesPage() {
-  // const { data: resumes } = useSuspenseQuery(resumeQueryOptions());
-
-  // Only fetch if the user exists
   const { data: resumes } = useSuspenseQuery(resumeQueryOptions());
-
 
   return (
   <div className="max-w-5xl mx-auto px-2 py-10">

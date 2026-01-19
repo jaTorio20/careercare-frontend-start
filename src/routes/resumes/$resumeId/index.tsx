@@ -1,14 +1,12 @@
-import { createFileRoute, useNavigate, notFound, Link } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { queryOptions, useSuspenseQuery, useMutation } from '@tanstack/react-query'
 import { getResume, deleteResume, getDownloadFile} from '@/api/resumes'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
-import { z } from 'zod'
 import NotFound from '@/components/NotFound'
 import { AnimatedStat } from '@/components/Resume/AnimatedStat'
 import { FileText, Trash } from "lucide-react"; 
 
-const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i)
 const resumeQueryOptions = (resumeId: string) =>
   queryOptions({
     queryKey: ['resume', resumeId],
@@ -22,14 +20,6 @@ export const Route = createFileRoute('/resumes/$resumeId/')({
     </ProtectedRoute>
   ),
   notFoundComponent: NotFound,
-  loader: async ({ params, context: { queryClient } }) => {
-    // Block invalid IDs
-    if (!objectIdSchema.safeParse(params.resumeId).success) {
-      throw notFound()
-    }
-    return queryClient.ensureQueryData(resumeQueryOptions(params.resumeId)
-    )
-  },
 })
 
 function ResumeDetailsPage() {

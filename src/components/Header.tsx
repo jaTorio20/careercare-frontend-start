@@ -246,7 +246,7 @@ const Header = memo(function Header() {
         </button>
       </div>
 
-      <div className={ `md:hidden bg-white 
+      <div className={ `md:hidden bg-white text-gray-600
         overflow-hidden transition-all duration-300 ease-linear `}>
         <nav className=" bg-white border-gray-200 flex justify-around py-2 md:hidden">
             {navItemsMobile.map(item => {

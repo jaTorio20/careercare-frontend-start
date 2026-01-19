@@ -7,6 +7,7 @@ import CoverLetterEditor from '@/components/cover-letter/CoverLetterEditor';
 import { exportDocx } from '@/utils/exporterDocument';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 import { useQuota } from '@/context/QuotaContext';
 import { ArrowLeft } from 'lucide-react';
@@ -114,7 +115,7 @@ function CoverLetterGenerate() {
     if (savedLetter) setEditedLetter(savedLetter)
     if (savedJob) setJobDescription(savedJob)
     if (savedTitle) setJobTitle(savedTitle)
-    if (savedCompany) setJobTitle(savedCompany)
+    if (savedCompany) setCompanyName(savedCompany)
     if (savedDetails) setUserDetails(savedDetails)
     if (savedGenerated) setGeneratedLetter(savedGenerated)
   }, [])
@@ -297,7 +298,14 @@ function CoverLetterGenerate() {
           disabled={isPending || quotaExceeded}
           className="w-full rounded-lg bg-linear-to-r from-indigo-600 to-indigo-600 px-6 py-3 text-white font-semibold shadow-md hover:from-blue-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isPending ? "Generating..." : "Generate Cover Letter"}
+          {isPending ? 
+          <span className='flex items-center justify-center'>
+            <Loader2 className="animate-spin h-5 w-5 mr-3 inline-block" />
+            Generating... 
+          </span>
+ 
+
+          : "Generate Cover Letter"}
         </button>
       </div>
     </form>

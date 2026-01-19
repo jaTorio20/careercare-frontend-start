@@ -1,6 +1,7 @@
 {
-  "short_name": "TanStack App",
-  "name": "Create TanStack App Sample",
+  "short_name": "CareerCare",
+  "name": "CareerCare AI Automation Dashboard",
+  "description": "AI-powered resume analysis, cover letter generation, job tracking, and interview practice.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +19,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#4f46e5",
   "background_color": "#ffffff"
 }

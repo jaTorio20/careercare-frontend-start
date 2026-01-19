@@ -20,10 +20,21 @@ export const Route = createFileRoute('/interview/sessions/')({
       <InterviewSessionsPage />
     </ProtectedRoute>
   ),
-  // loader: async ({ context: { queryClient } }) => {
-  //   await queryClient.ensureQueryData(sessionsQueryOptions())
-  //   return null
-  // },
+  head: () => ({
+    title: 'AI Interview Sessions | CareerCare',
+    meta: [
+      { name: 'description', content: 'Manage and chat with your AI interview sessions. Start, review, and interact with AI-powered interview practice sessions in CareerCare.' },
+      { property: 'og:title', content: 'AI Interview Sessions | CareerCare' },
+      { property: 'og:description', content: 'Manage and chat with your AI interview sessions. Start, review, and interact with AI-powered interview practice sessions in CareerCare.' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: 'https://careercare.ai/interview/sessions' },
+      { property: 'og:image', content: 'https://careercare.ai/socials/og-default.png' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: 'AI Interview Sessions | CareerCare' },
+      { name: 'twitter:description', content: 'Manage and chat with your AI interview sessions. Start, review, and interact with AI-powered interview practice sessions in CareerCare.' },
+      { name: 'twitter:image', content: 'https://careercare.ai/socials/og-default.png' },
+    ],
+  }),
 })
 
 function InterviewSessionsPage() {
@@ -231,7 +242,7 @@ function InterviewSessionsPage() {
 
 
   return (
-<div className="flex h-[calc(97dvh-var(--header-h))] bg-gray-50 w-full overflow-hidden">
+<div className="flex bg-gray-50 w-full h-full overflow-hidden">
 
   {/* Sidebar */}
   <ResponsiveSidebar
@@ -244,9 +255,9 @@ function InterviewSessionsPage() {
   />
 
   {/* Chat Area */}
-  <main className="flex-1 flex justify-center">
+  <main className="flex-1 flex justify-center h-full">
     {activeSessionId ? (
-      <section className='max-w-3xl w-full justify-items-center flex flex-col'>
+      <section className='max-w-3xl w-full md:h-[94vh] h-[88vh]  flex flex-col pb-8'>
         {/* Messages */}
         <div className="flex-1 overflow-y-auto flex flex-col px-4 pt-2 pb-4">
           {messages.length === 0 ? (

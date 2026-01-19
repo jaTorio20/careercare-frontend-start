@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link, notFound } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { getDetailLetter, deleteCoverLetter } from '@/api/coverLetter'
 import { queryOptions, useSuspenseQuery, useMutation} from '@tanstack/react-query'
 import { exportDocx } from '@/utils/exporterDocument'
@@ -6,10 +6,8 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
 import NotFound from '@/components/NotFound'
 import ErrorPage from '@/components/ErrorPage'
-import {z} from 'zod'
 import { File, Trash, Pencil, ArrowLeft } from 'lucide-react'
 
-const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i)
 const coverLetterQueryOptions = (coverLetterId: string) => {
   return queryOptions({
     queryKey: ['cover-letter', coverLetterId],
@@ -25,14 +23,20 @@ export const Route = createFileRoute('/cover-letter/$coverLetterId/')({
   ),
   notFoundComponent: NotFound,
   errorComponent: ErrorPage,
-
-  loader: async ({params, context: {queryClient}}) => {
-    // Block invalid IDs
-    if (!objectIdSchema.safeParse(params.coverLetterId).success) {
-      throw notFound()
-    }
-    return queryClient.ensureQueryData(coverLetterQueryOptions(params.coverLetterId));
-  }
+  head: () => ({
+    title: 'Cover Letter Details | CareerCare',
+    meta: [
+      { name: 'description', content: 'View this AI-generated cover letter.' },
+      { property: 'og:title', content: 'Cover Letter Details | CareerCare' },
+      { property: 'og:description', content: 'View this AI-generated cover letter.' },
+      { property: 'og:type', content: 'article' },
+      { property: 'og:image', content: '/og-image.png' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: 'Cover Letter Details | CareerCare' },
+      { name: 'twitter:description', content: 'View this AI-generated cover letter.' },
+      { name: 'twitter:image', content: '/og-image.png' },
+    ],
+  }),
 })
 
 function CoverLetterDetailsPage() {
@@ -91,10 +95,11 @@ function CoverLetterDetailsPage() {
         </div>
 
         {/* Cover Letter Content */}
+        {/* max-h-[500px] */}
         <div
           className="
             max-w-none bg-gray-50 p-6 rounded-md border border-gray-200
-            overflow-y-auto max-h-[500px]
+            overflow-y-auto max-h-125
             leading-relaxed
             [&_p]:mb-4 [&_p:last-child]:mb-0
             [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4

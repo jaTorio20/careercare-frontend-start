@@ -19,9 +19,18 @@ const jobApplicationQueryOptions = () => {
 
 export const Route = createFileRoute('/applications/')({
   head: () => ({
+    title: 'Job Applications | CareerCare',
     meta: [
-      { title: 'Job Applications', content: 'List of Job Applied' },
-    ],  
+      { name: 'description', content: 'List of your job applications.' },
+      { property: 'og:title', content: 'Job Applications | CareerCare' },
+      { property: 'og:description', content: 'List of your job applications.' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:image', content: '/og-image.png' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: 'Job Applications | CareerCare' },
+      { name: 'twitter:description', content: 'List of your job applications.' },
+      { name: 'twitter:image', content: '/og-image.png' },
+    ],
   }),
   component: () => (
     <ProtectedRoute>

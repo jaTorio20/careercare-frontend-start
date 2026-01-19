@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, notFound, Link } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { updateJobApplication, getDetailApplication } from '@/api/jobApplication'
 import { useMutation, useSuspenseQuery, queryOptions, useQueryClient } from '@tanstack/react-query'
@@ -6,10 +6,8 @@ import { ResumeViewer } from '@/components/Job-Application/ResumeViewer'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
 import NotFound from '@/components/NotFound'
-import {z} from 'zod'
 import ResumeFileInput from '@/components/Job-Application/ResumeFileInput'
 
-const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i)
 const jobApplicationQueryOptions = (id: string) => {
   return queryOptions({
     queryKey: ['applications', id],
@@ -24,19 +22,6 @@ export const Route = createFileRoute('/applications/$applicationId/edit')({
       </ProtectedRoute>
     ),
     notFoundComponent: NotFound,
-    loader: async ({params, context: {queryClient}}) => {
-      if (!objectIdSchema.safeParse(params.applicationId).success) {
-        throw notFound()
-      }
-      try {
-        return queryClient.ensureQueryData(jobApplicationQueryOptions(params.applicationId))
-      } catch (err: any) {
-      if (err.response?.status === 400) {
-        throw notFound();
-      }
-      throw err;         
-      }
-  }
 })
 
 function ApplicationEditPage() {

@@ -16,9 +16,18 @@ const coverLetterQueryOptions = () => {
 
 export const Route = createFileRoute('/cover-letter/')({
   head: () => ({
+    title: 'Cover Letters | CareerCare',
     meta: [
-      { title: 'List of cover-letter', content: 'List of draft cover-letter' },
-    ],  
+      { name: 'description', content: 'List of your AI-generated cover letters.' },
+      { property: 'og:title', content: 'Cover Letters | CareerCare' },
+      { property: 'og:description', content: 'List of your AI-generated cover letters.' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:image', content: '/og-image.png' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: 'Cover Letters | CareerCare' },
+      { name: 'twitter:description', content: 'List of your AI-generated cover letters.' },
+      { name: 'twitter:image', content: '/og-image.png' },
+    ],
   }),
 
   component: () => (
@@ -28,10 +37,6 @@ export const Route = createFileRoute('/cover-letter/')({
       </Suspense>
     </ProtectedRoute>
   ),
-
-  // loader: async ({context: {queryClient}}) => {
-  //   return queryClient.ensureQueryData(coverLetterQueryOptions())
-  // }
 
 });
 

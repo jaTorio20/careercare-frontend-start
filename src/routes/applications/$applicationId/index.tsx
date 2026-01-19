@@ -1,21 +1,18 @@
-import { createFileRoute, useNavigate, Link, notFound } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { getDetailApplication, getDownloadFile, deleteJobApplication } from '@/api/jobApplication'
 import { queryOptions, useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { StatusBadge } from '@/components/Job-Application/StatusBadge'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
 import NotFound from '@/components/NotFound'
-import {z} from 'zod'
 import { ArrowLeft } from 'lucide-react'
 
-const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i)
 const jobApplicationQueryOptions = (applicationId: string) => {
   return queryOptions({
     queryKey: ['applications', applicationId],
     queryFn: async () => await getDetailApplication(applicationId),
   })
 }
-
 
 export const Route = createFileRoute('/applications/$applicationId/')({
   component: () => (
@@ -24,13 +21,20 @@ export const Route = createFileRoute('/applications/$applicationId/')({
     </ProtectedRoute>
   ),
   notFoundComponent: NotFound,
-  loader: async ({params, context: {queryClient}}) => {
-    // Block invalid IDs
-    if (!objectIdSchema.safeParse(params.applicationId).success) {
-      throw notFound()
-    }
-    return queryClient.ensureQueryData(jobApplicationQueryOptions(params.applicationId));
-  },
+  head: () => ({
+    title: 'Job Application Details | CareerCare',
+    meta: [
+      { name: 'description', content: 'View this job application.' },
+      { property: 'og:title', content: 'Job Application Details | CareerCare' },
+      { property: 'og:description', content: 'View this job application.' },
+      { property: 'og:type', content: 'article' },
+      { property: 'og:image', content: '/og-image.png' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: 'Job Application Details | CareerCare' },
+      { name: 'twitter:description', content: 'View this job application.' },
+      { name: 'twitter:image', content: '/og-image.png' },
+    ],
+  }),
 })
 
 function ApplicationDetailsPage() {

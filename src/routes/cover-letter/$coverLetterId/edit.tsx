@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, notFound, Link } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useState } from 'react' 
 import { useMutation, useSuspenseQuery, queryOptions} from '@tanstack/react-query'
 import { getDetailLetter, updateCoverLetter} from '@/api/coverLetter'
@@ -6,9 +6,7 @@ import CoverLetterEditor from '@/components/cover-letter/CoverLetterEditor'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
 import NotFound from '@/components/NotFound'
-import {z} from 'zod'
 
-const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i)
 const coverLetterQueryOptions = (id: string) => {
   return queryOptions({
     queryKey: ['cover-letter', id],
@@ -23,21 +21,6 @@ export const Route = createFileRoute('/cover-letter/$coverLetterId/edit')({
       </ProtectedRoute>
     ),
     notFoundComponent: NotFound,
-    loader: async ({params, context: {queryClient}}) => {
-    if (!objectIdSchema.safeParse(params.coverLetterId).success) {
-      throw notFound()
-    }
-    try {
-      return await queryClient.ensureQueryData(
-        coverLetterQueryOptions(params.coverLetterId)
-      );
-    } catch (err: any) {
-      if (err.response?.status === 400) {
-        throw notFound();
-      }
-      throw err; 
-    }
-  }
 })
 
 function CoverLetterEditPage() {
@@ -51,6 +34,7 @@ function CoverLetterEditPage() {
   const [jobDescription, setJobDescription] = useState(coverLetter.jobDescription);
   const [editedLetter, setEditedLetter] = useState(coverLetter.editedLetter);
 
+  const { queryClient } = Route.useRouteContext();
   const { mutateAsync, isPending } = useMutation({
     mutationFn: () => updateCoverLetter(coverLetterId, {
       jobTitle,
@@ -59,6 +43,8 @@ function CoverLetterEditPage() {
       editedLetter
     }),
     onSuccess: () => {
+      // Invalidate the detail query so the next page load is fresh
+      queryClient.invalidateQueries({ queryKey: ['cover-letter', coverLetterId] });
       navigate({
         to: '/cover-letter/$coverLetterId',
         params: { coverLetterId: coverLetter._id}

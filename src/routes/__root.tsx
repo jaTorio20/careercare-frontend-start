@@ -13,6 +13,8 @@ type RouterContext = {
   queryClient: QueryClient
 }
 
+import ErrorPage from '@/components/ErrorPage'
+
 export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
     meta: [
@@ -24,11 +26,58 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'CareerCare - AI Job Application & Resume Dashboard',
+        title: 'CareerCare AI Automation Dashboard',
       },
       {
         name: 'description',
         content: 'CareerCare helps you analyze resumes, generate cover letters, track job applications, and practice interviews using AI.',
+      },
+      // Open Graph meta tags (for social sharing & SEO)
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        property: 'og:title',
+        content: 'CareerCare AI Automation Dashboard',
+      },
+      {
+        property: 'og:description',
+        content: 'CareerCare helps you analyze resumes, generate cover letters, track job applications, and practice interviews using AI.',
+      },
+      {
+        property: 'og:image',
+        content: '/og-image.png',
+      },
+      {
+        property: 'og:site_name',
+        content: 'CareerCare',
+      },
+      // Twitter Card meta tags
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        name: 'twitter:title',
+        content: 'CareerCare AI Automation Dashboard',
+      },
+      {
+        name: 'twitter:description',
+        content: 'CareerCare helps you analyze resumes, generate cover letters, track job applications, and practice interviews using AI.',
+      },
+      {
+        name: 'twitter:image',
+        content: '/og-image.png',
+      },
+      // Additional SEO
+      {
+        name: 'keywords',
+        content: 'CareerCare, AI resume analyzer, cover letter generator, job application tracker, interview practice, AI job search',
+      },
+      {
+        name: 'author',
+        content: 'CareerCare',
       },
     ],
     links: [
@@ -36,12 +85,25 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         rel: 'stylesheet',
         href: appCss,
       },
+      {
+        rel: 'icon',
+        href: '/favicon.ico',
+      },
+      {
+        rel: 'apple-touch-icon',
+        href: '/logo192.png',
+      },
+      {
+        rel: 'manifest',
+        href: '/manifest.json',
+      },
     ],
   }),
 
   shellComponent: RootDocument,
   component: RootLayout,
   notFoundComponent: NotFound,
+  errorComponent: ErrorPage,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
