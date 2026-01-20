@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { updateJobApplication, getDetailApplication } from '@/api/jobApplication'
+import { updateJobApplication, getDetailApplication } from '@/api/jobApplication/jobApplication'
 import { useMutation, useSuspenseQuery, queryOptions, useQueryClient } from '@tanstack/react-query'
 import { ResumeViewer } from '@/components/Job-Application/ResumeViewer'
 import ProtectedRoute from '@/components/ProtectedRoute'

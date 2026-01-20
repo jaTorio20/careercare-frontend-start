@@ -1,14 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { getJobApplications } from '@/api/jobApplication'
+import { getJobApplications } from '@/api/jobApplication/jobApplication'
 import { Link } from '@tanstack/react-router'
 import { StatusBadge } from '@/components/Job-Application/StatusBadge'
 import ProtectedRoute from '@/components/ProtectedRoute'
-import { useState } from 'react'
-import { Plus } from 'lucide-react'
+import React, { useState } from 'react'
+import { Plus, Bell } from 'lucide-react'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import type { JobApplicationEntry } from '@/types'
 import { useDebounce } from '@/hooks/useDebounce'
 import { Suspense } from 'react'
+import ReminderModal from '@/components/Job-Application/Reminders/ReminderModal'
 
 const jobApplicationQueryOptions = () => {
   return queryOptions({
@@ -66,6 +67,8 @@ function JobApplicationPage() {
   
   const [searchInput, setSearchInput] = useState('')
   const search = useDebounce(searchInput, 400)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedJobApplicationId, setSelectedJobApplicationId] = useState<string>(''); // Updated to default to an empty string
 
   // Filter applications client-side
   const filteredApplications = applications.filter((app) => {
@@ -123,15 +126,25 @@ function JobApplicationPage() {
           {search ? 'No matching applications found.' : 'No applications found.'}
         </p>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 ">
           {filteredApplications.map((jobApplication: JobApplicationEntry) => (
             <div
               key={jobApplication._id}
               className="flex flex-col justify-between border
-               border-gray-200 rounded-xl bg-white p-6 
+               border-gray-200 rounded-xl bg-white px-6 py-4
                shadow-sm hover:shadow-lg transition transform
                 hover:-translate-y-1"
             >
+              <div className='flex justify-end'>
+                <button className='cursor-pointer' 
+                  onClick={() => {
+                    setIsModalOpen(true)
+                    setSelectedJobApplicationId(jobApplication._id)
+                  }}>
+                  <Bell className='h-5 w-5 text-indigo-600 hover:text-indigo-800'/>
+                </button>
+              </div>
+
               <div>
                 <h2 className="text-lg font-semibold text-gray-800">
                   {jobApplication.jobTitle}{' '}
@@ -154,6 +167,14 @@ function JobApplicationPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {isModalOpen && (
+        <ReminderModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          jobApplication={{ jobApplicationId: selectedJobApplicationId }}
+        />
       )}
     </div>
   )

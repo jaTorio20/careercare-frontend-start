@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createJobApplication } from '@/api/jobApplication'
+import { createJobApplication } from '@/api/jobApplication/jobApplication'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
 import ResumeFileInput from '@/components/Job-Application/ResumeFileInput'

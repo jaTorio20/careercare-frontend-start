@@ -80,6 +80,28 @@ export type JobApplicationEntry = {
   updatedAt: string;
 }
 
+// Reminder type
+export interface Reminder {
+  _id: string; 
+  applicationId: string;
+  type: 'interview' | 'follow-up' | 'deadline';
+  reminderDate: string;
+  remindBefore: '15m' | '30m' | '1h' | '2h' | 'none';
+  message: string;
+  remindBeforeSent: boolean;
+  status: 'pending' | 'sent' | 'cancelled';
+}
+
+// Input type for creating a reminder
+export interface CreateReminderInput {
+  applicationId: string;
+  type: 'interview' | 'follow-up' | 'deadline';
+  reminderDate: string;
+  remindBefore?: '15m' | '30m' | '1h' | '2h' | 'none';
+  message?: string;
+}
+
+// Interview session and messages
 export interface InterviewSession {
   _id: string;
   userId: string;

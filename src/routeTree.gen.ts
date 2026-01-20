@@ -126,22 +126,22 @@ const authResetPasswordTokenRoute = authResetPasswordTokenRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cover-letter/generate': typeof CoverLetterGenerateRoute
-  '/applications': typeof ApplicationsIndexRoute
-  '/cover-letter': typeof CoverLetterIndexRoute
-  '/resumes': typeof ResumesIndexRoute
+  '/applications/': typeof ApplicationsIndexRoute
+  '/cover-letter/': typeof CoverLetterIndexRoute
+  '/resumes/': typeof ResumesIndexRoute
   '/reset-password/$token': typeof authResetPasswordTokenRoute
   '/applications/$applicationId/edit': typeof ApplicationsApplicationIdEditRoute
   '/cover-letter/$coverLetterId/edit': typeof CoverLetterCoverLetterIdEditRoute
-  '/forgot-password': typeof authForgotPasswordIndexRoute
-  '/login': typeof authLoginIndexRoute
-  '/register': typeof authRegisterIndexRoute
-  '/verify': typeof authVerifyIndexRoute
-  '/applications/$applicationId': typeof ApplicationsApplicationIdIndexRoute
-  '/applications/new': typeof ApplicationsNewIndexRoute
-  '/cover-letter/$coverLetterId': typeof CoverLetterCoverLetterIdIndexRoute
-  '/interview/sessions': typeof InterviewSessionsIndexRoute
-  '/resumes/$resumeId': typeof ResumesResumeIdIndexRoute
-  '/resumes/analyze': typeof ResumesAnalyzeIndexRoute
+  '/forgot-password/': typeof authForgotPasswordIndexRoute
+  '/login/': typeof authLoginIndexRoute
+  '/register/': typeof authRegisterIndexRoute
+  '/verify/': typeof authVerifyIndexRoute
+  '/applications/$applicationId/': typeof ApplicationsApplicationIdIndexRoute
+  '/applications/new/': typeof ApplicationsNewIndexRoute
+  '/cover-letter/$coverLetterId/': typeof CoverLetterCoverLetterIdIndexRoute
+  '/interview/sessions/': typeof InterviewSessionsIndexRoute
+  '/resumes/$resumeId/': typeof ResumesResumeIdIndexRoute
+  '/resumes/analyze/': typeof ResumesAnalyzeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -189,22 +189,22 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/cover-letter/generate'
-    | '/applications'
-    | '/cover-letter'
-    | '/resumes'
+    | '/applications/'
+    | '/cover-letter/'
+    | '/resumes/'
     | '/reset-password/$token'
     | '/applications/$applicationId/edit'
     | '/cover-letter/$coverLetterId/edit'
-    | '/forgot-password'
-    | '/login'
-    | '/register'
-    | '/verify'
-    | '/applications/$applicationId'
-    | '/applications/new'
-    | '/cover-letter/$coverLetterId'
-    | '/interview/sessions'
-    | '/resumes/$resumeId'
-    | '/resumes/analyze'
+    | '/forgot-password/'
+    | '/login/'
+    | '/register/'
+    | '/verify/'
+    | '/applications/$applicationId/'
+    | '/applications/new/'
+    | '/cover-letter/$coverLetterId/'
+    | '/interview/sessions/'
+    | '/resumes/$resumeId/'
+    | '/resumes/analyze/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -280,21 +280,21 @@ declare module '@tanstack/react-router' {
     '/resumes/': {
       id: '/resumes/'
       path: '/resumes'
-      fullPath: '/resumes'
+      fullPath: '/resumes/'
       preLoaderRoute: typeof ResumesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cover-letter/': {
       id: '/cover-letter/'
       path: '/cover-letter'
-      fullPath: '/cover-letter'
+      fullPath: '/cover-letter/'
       preLoaderRoute: typeof CoverLetterIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/applications/': {
       id: '/applications/'
       path: '/applications'
-      fullPath: '/applications'
+      fullPath: '/applications/'
       preLoaderRoute: typeof ApplicationsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -308,70 +308,70 @@ declare module '@tanstack/react-router' {
     '/resumes/analyze/': {
       id: '/resumes/analyze/'
       path: '/resumes/analyze'
-      fullPath: '/resumes/analyze'
+      fullPath: '/resumes/analyze/'
       preLoaderRoute: typeof ResumesAnalyzeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/resumes/$resumeId/': {
       id: '/resumes/$resumeId/'
       path: '/resumes/$resumeId'
-      fullPath: '/resumes/$resumeId'
+      fullPath: '/resumes/$resumeId/'
       preLoaderRoute: typeof ResumesResumeIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interview/sessions/': {
       id: '/interview/sessions/'
       path: '/interview/sessions'
-      fullPath: '/interview/sessions'
+      fullPath: '/interview/sessions/'
       preLoaderRoute: typeof InterviewSessionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cover-letter/$coverLetterId/': {
       id: '/cover-letter/$coverLetterId/'
       path: '/cover-letter/$coverLetterId'
-      fullPath: '/cover-letter/$coverLetterId'
+      fullPath: '/cover-letter/$coverLetterId/'
       preLoaderRoute: typeof CoverLetterCoverLetterIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/applications/new/': {
       id: '/applications/new/'
       path: '/applications/new'
-      fullPath: '/applications/new'
+      fullPath: '/applications/new/'
       preLoaderRoute: typeof ApplicationsNewIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/applications/$applicationId/': {
       id: '/applications/$applicationId/'
       path: '/applications/$applicationId'
-      fullPath: '/applications/$applicationId'
+      fullPath: '/applications/$applicationId/'
       preLoaderRoute: typeof ApplicationsApplicationIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/verify/': {
       id: '/(auth)/verify/'
       path: '/verify'
-      fullPath: '/verify'
+      fullPath: '/verify/'
       preLoaderRoute: typeof authVerifyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/register/': {
       id: '/(auth)/register/'
       path: '/register'
-      fullPath: '/register'
+      fullPath: '/register/'
       preLoaderRoute: typeof authRegisterIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/login/': {
       id: '/(auth)/login/'
       path: '/login'
-      fullPath: '/login'
+      fullPath: '/login/'
       preLoaderRoute: typeof authLoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/forgot-password/': {
       id: '/(auth)/forgot-password/'
       path: '/forgot-password'
-      fullPath: '/forgot-password'
+      fullPath: '/forgot-password/'
       preLoaderRoute: typeof authForgotPasswordIndexRouteImport
       parentRoute: typeof rootRouteImport
     }

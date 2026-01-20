@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
-import { getDetailApplication, getDownloadFile, deleteJobApplication } from '@/api/jobApplication'
+import { getDetailApplication, getDownloadFile, deleteJobApplication } from '@/api/jobApplication/jobApplication'
 import { queryOptions, useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { StatusBadge } from '@/components/Job-Application/StatusBadge'
 import ProtectedRoute from '@/components/ProtectedRoute'
