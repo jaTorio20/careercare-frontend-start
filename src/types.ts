@@ -78,6 +78,7 @@ export type JobApplicationEntry = {
   publicId?: string;
   createdAt: string;
   updatedAt: string;
+  reminders?: Reminder[]; // Added reminders property
 }
 
 // Reminder type

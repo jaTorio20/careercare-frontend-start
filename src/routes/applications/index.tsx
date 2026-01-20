@@ -3,18 +3,22 @@ import { getJobApplications } from '@/api/jobApplication/jobApplication'
 import { Link } from '@tanstack/react-router'
 import { StatusBadge } from '@/components/Job-Application/StatusBadge'
 import ProtectedRoute from '@/components/ProtectedRoute'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Plus, Bell } from 'lucide-react'
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { queryOptions, useMutation, useSuspenseQuery, useQueryClient } from '@tanstack/react-query'
 import type { JobApplicationEntry } from '@/types'
 import { useDebounce } from '@/hooks/useDebounce'
 import { Suspense } from 'react'
 import ReminderModal from '@/components/Job-Application/Reminders/ReminderModal'
+import { getRemindersByApplication, cancelReminder } from '@/api/jobApplication/jobReminder'
 
 const jobApplicationQueryOptions = () => {
   return queryOptions({
     queryKey: ['applications'],
     queryFn: () => getJobApplications(),
+    staleTime: 0, // Ensure data is always fresh
+    refetchOnWindowFocus: true, // Refetch data when the window regains focus
+    refetchOnReconnect: true, // Refetch data when the network reconnects
   })
 }
 
@@ -62,27 +66,96 @@ function ApplicationsSkeleton() {
   )
 }
 
+const useReminders = (applicationId: string) => {
+  return useSuspenseQuery({
+    queryKey: ['reminders', applicationId],
+    queryFn: () => getRemindersByApplication(applicationId),
+    staleTime: 0, // Ensure fresh data
+  });
+};
+
 function JobApplicationPage() {
-  const { data: applications } = useSuspenseQuery(jobApplicationQueryOptions())
-  
-  const [searchInput, setSearchInput] = useState('')
-  const search = useDebounce(searchInput, 400)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedJobApplicationId, setSelectedJobApplicationId] = useState<string>(''); // Updated to default to an empty string
+  const { data: applications } = useSuspenseQuery(jobApplicationQueryOptions());
+  const queryClient = useQueryClient();
+  const [searchInput, setSearchInput] = useState('');
+  const search = useDebounce(searchInput, 400);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedJobApplicationId, setSelectedJobApplicationId] = useState<string>('');
+
+  const [cancelingReminders, setCancelingReminders] = useState<Record<string, boolean>>({});
+
+  const { mutateAsync: cancelReminderAsync } = useMutation({
+    mutationFn: async ({ applicationId, reminderId }: { applicationId: string; reminderId: string }) => {
+      return cancelReminder(applicationId, reminderId);
+    },
+    onSuccess: async (_, { applicationId }) => {
+      await queryClient.invalidateQueries({ queryKey: ['reminders', applicationId] });
+    },
+  });
+
+  const handleCancelReminder = async (applicationId: string, reminderId: string) => {
+    if (!applicationId || !reminderId) {
+      console.error('Invalid applicationId or reminderId:', applicationId, reminderId);
+      return;
+    }
+
+    setCancelingReminders((prev) => ({ ...prev, [reminderId]: true }));
+
+    try {
+      await cancelReminderAsync({ applicationId, reminderId });
+
+      await queryClient.invalidateQueries({ queryKey: ['reminders', applicationId] });
+      await queryClient.refetchQueries({ queryKey: ['reminders', applicationId] });
+    } finally {
+      setCancelingReminders((prev) => ({ ...prev, [reminderId]: false }));
+    }
+  };
 
   // Filter applications client-side
   const filteredApplications = applications.filter((app) => {
-    if (!search) return true
-    const searchLower = search.toLowerCase()
+    if (!search) return true;
+    const searchLower = search.toLowerCase();
     return (
       app.jobTitle.toLowerCase().includes(searchLower) ||
       app.companyName.toLowerCase().includes(searchLower)
-    )
-  })
+    );
+  });
+
+  // Pre-fetch reminders for all applications
+  const reminders = Object.fromEntries(
+    applications.map((app) => [app._id, useReminders(app._id)])
+  );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(e.target.value)
-  }
+    setSearchInput(e.target.value);
+  };
+
+  const handleDropdownToggle = (dropdownId: string) => {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+      const isHidden = dropdown.classList.contains("hidden");
+      document.querySelectorAll("[id^='dropdown-']").forEach((el) => el.classList.add("hidden")); // Close other dropdowns
+      if (isHidden) {
+        dropdown.classList.remove("hidden");
+      } else {
+        dropdown.classList.add("hidden");
+      }
+    }
+  };
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest("[id^='dropdown-']") && !target.closest(".dropdown-toggle")) {
+      document.querySelectorAll("[id^='dropdown-']").forEach((el) => el.classList.add("hidden"));
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
@@ -127,45 +200,93 @@ function JobApplicationPage() {
         </p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 ">
-          {filteredApplications.map((jobApplication: JobApplicationEntry) => (
-            <div
-              key={jobApplication._id}
-              className="flex flex-col justify-between border
-               border-gray-200 rounded-xl bg-white px-6 py-4
-               shadow-sm hover:shadow-lg transition transform
-                hover:-translate-y-1"
-            >
-              <div className='flex justify-end'>
-                <button className='cursor-pointer' 
-                  onClick={() => {
-                    setIsModalOpen(true)
-                    setSelectedJobApplicationId(jobApplication._id)
-                  }}>
-                  <Bell className='h-5 w-5 text-indigo-600 hover:text-indigo-800'/>
-                </button>
-              </div>
+          {filteredApplications.map((jobApplication: JobApplicationEntry) => {
+            const appReminders = reminders[jobApplication._id]?.data;
 
-              <div>
-                <h2 className="text-lg font-semibold text-gray-800">
-                  {jobApplication.jobTitle}{' '}
-                  <span className="text-gray-500 font-normal">@ {jobApplication.companyName}</span>
-                </h2>
-                <div className="flex items-center gap-2 mt-3">
-                  <StatusBadge status={jobApplication.status} />
-                  <span className="text-sm text-gray-500">{jobApplication.location}</span>
-                </div>
-              </div>
-
-              <Link
-                to={`/applications/$applicationId`}
-                params={{ applicationId: jobApplication._id }}
-                className="mt-6 inline-block text-center px-4 py-2 
-                text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition"
+            return (
+              <div
+                key={jobApplication._id}
+                className="flex flex-col justify-between border
+                 border-gray-200 rounded-xl bg-white px-6 py-4
+                 shadow-sm hover:shadow-lg transition transform
+                  hover:-translate-y-1"
               >
-                View Details
-              </Link>
-            </div>
-          ))}
+                <div className='flex justify-between mb-6'>
+                  <button className='cursor-pointer' 
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setSelectedJobApplicationId(jobApplication._id);
+                    }}>
+                    <Bell className='h-5 w-5 text-indigo-600 hover:text-indigo-800'/>
+                  </button>
+                  <div>
+                    {appReminders && appReminders.length > 0 ? (
+                      <div className="relative text-sm text-gray-500">
+                        {appReminders[0].status === "pending" && (
+                          <button 
+                            onClick={() => handleCancelReminder(jobApplication._id, appReminders[0]._id)}
+                            disabled={cancelingReminders[appReminders[0]._id]}
+                            className="text-red-600 hover:text-red-800 mr-4 cursor-pointer"
+                          >
+                            {cancelingReminders[appReminders[0]._id] ? 'Cancelling...' : 'Cancel'}
+                          </button>
+                        )}
+                        {appReminders[0].status !== "cancelled" && (
+                        <button
+                          className="dropdown-toggle text-indigo-600 hover:text-indigo-800 focus:outline-none cursor-pointer"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleDropdownToggle(`dropdown-${jobApplication._id}`);
+                          }}
+                        >
+                          View Status
+                        </button>
+                        )}
+                        <div
+                          id={`dropdown-${jobApplication._id}`}
+                          className={`absolute z-10 mt-0 ${appReminders[0].status === "pending" ? "-left-16" : "-left-30"} w-48 bg-white border border-gray-200 rounded shadow-lg hidden`}
+                        >
+                          <div className="px-4 py-2">
+                            <p> {new Date(appReminders[0].reminderDate).toLocaleDateString()} {new Date(appReminders[0].reminderDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                            <p>Type: {appReminders[0].type}</p>
+                            <p>Status: {appReminders[0].status}</p>
+                            {appReminders[0].remindBefore !== "none" && (
+                              <p>Remind Before: {appReminders[0].remindBefore}</p>
+                            )}
+                            {appReminders[0].remindBeforeSent && (
+                              <p>Remind Before Sent: Yes</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-gray-500">No reminders set.</div>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    {jobApplication.jobTitle}{' '}
+                    <span className="text-gray-500 font-normal">@ {jobApplication.companyName}</span>
+                  </h2>
+                  <div className="flex items-center gap-2 mt-3">
+                    <StatusBadge status={jobApplication.status} />
+                    <span className="text-sm text-gray-500">{jobApplication.location}</span>
+                  </div>
+                </div>
+
+                <Link
+                  to={`/applications/$applicationId`}
+                  params={{ applicationId: jobApplication._id }}
+                  className="mt-6 inline-block text-center px-4 py-2 
+                  text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition"
+                >
+                  View Details
+                </Link>
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -177,5 +298,5 @@ function JobApplicationPage() {
         />
       )}
     </div>
-  )
+  );
 }

@@ -61,7 +61,7 @@ function ApplicationDetailsPage() {
     });
 
     const handleDelete = async() => {
-      const confirmDelete = window.confirm("Are you sure you want to delete this resume?");
+      const confirmDelete = window.confirm("Are you sure you want to delete this job application and its associated reminders?");
       if (confirmDelete) {
         await deleteMutate();
       }
