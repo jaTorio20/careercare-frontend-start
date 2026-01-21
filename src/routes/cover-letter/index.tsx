@@ -92,7 +92,10 @@ function CoverLetterPage() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search by job title or company..."
-            className="w-full rounded-lg border border-gray-300 px-4 pr-10 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+            className="w-full rounded-lg border border-transparent px-4 pr-10 py-2
+             text-sm focus:outline-none 
+             focus:border-indigo-500
+              bg-white card-shadow-input"
           />
 
           {searchInput && (
@@ -122,8 +125,9 @@ function CoverLetterPage() {
           {sortedAndFilteredLetters.map((letter) => (
             <li
               key={letter._id}
-              className="group relative bg-white border border-gray-200 
-              rounded-xl shadow-sm hover:shadow-lg transition-shadow 
+              className="group relative bg-white border border-transparent
+              card-shadow
+              rounded-xl hover:shadow-lg transition-shadow 
               p-6 flex flex-col"
             >
               <Link to={letter._id} className="flex flex-col h-full">
@@ -145,8 +149,8 @@ function CoverLetterPage() {
               </Link>
 
               {/* Decorative hover ring */}
-              <div className="absolute inset-0 rounded-xl ring-2 ring-transparent
-               group-hover:ring-indigo-200 transition pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-xl ring-1 ring-transparent
+               group-hover:ring-indigo-500 transition pointer-events-none"></div>
             </li>
           ))}
         </ul>

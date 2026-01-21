@@ -98,6 +98,17 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         href: '/manifest.json',
       },
     ],
+    scripts: [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "url": "https://careercare-ai-automation.vercel.app",
+          "logo": "https://careercare-ai-automation.vercel.app/logo512.png",
+        }),
+      },
+    ],
   }),
 
   shellComponent: RootDocument,

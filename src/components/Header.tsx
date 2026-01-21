@@ -42,8 +42,8 @@ const Header = memo(function Header() {
     { label: "AI Interview", path: "/interview/sessions"},
   ];
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const base = 'text-gray-700 px-2 text-sm font-medium cursor-pointer rounded-lg hover:text-indigo-600 hover:bg-blue-100 font-sm';
-  const active = 'text-indigo-600 text-sm font-medium cursor-pointer hover:text-indigo-700';
+  const base = 'text-gray-700 px-2 text-sm font-sm cursor-pointer rounded-lg hover:text-indigo-600 hover:bg-blue-100 font-sm';
+  const active = 'text-indigo-600 text-sm font-sm cursor-pointer hover:text-indigo-700';
   
   // ACTIVE NAV BUTTON FOR SMALLER SCREEN - reuse the same pathname
   const navItemsMobile = [
@@ -52,8 +52,8 @@ const Header = memo(function Header() {
     { icon: Briefcase,label: "Applications", path: "/applications"},
     { icon: Bot, label: "AI Interview", path: "/interview/sessions"},
   ];
-  const baseMobile = 'text-gray-700rounded-lg cursor-pointer hover:text-indigo-600 font-medium';
-  const activeMobile = 'text-indigo-600 font-medium cursor-pointer hover:text-indigo-700';
+  const baseMobile = 'text-gray-700 rounded-lg cursor-pointer hover:text-indigo-600 font-sm';
+  const activeMobile = 'text-indigo-600 font-sm cursor-pointer hover:text-indigo-700';
 
   // dropdownRef
   const guestDropdownRef = useRef<HTMLDivElement>(null);

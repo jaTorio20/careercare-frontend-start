@@ -205,7 +205,9 @@ function JobApplicationPage() {
             value={searchInput}
             onChange={handleSearchChange}
             placeholder="Search by job title or company..."
-            className="w-full rounded-lg border border-gray-300 px-4 pr-10 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+            className="w-full rounded-lg card-shadow-input border border-transparent px-4 pr-10 py-2 
+            text-sm focus:border-indigo-600 focus:outline-none 
+             bg-white"
           />
 
           {searchInput && (
@@ -248,9 +250,10 @@ function JobApplicationPage() {
             return (
               <div
                 key={jobApplication._id}
-                className="flex flex-col justify-between border
-                 border-gray-200 rounded-xl bg-white px-6 py-4
-                 shadow-sm hover:shadow-lg transition transform
+                className="flex flex-col justify-between
+                  rounded-xl bg-white px-6 py-4 hover:border-indigo-400 
+                  border border-transparent
+                 card-shadow hover:shadow transition transform
                   hover:-translate-y-1"
               >
                 <div className='flex justify-between mb-6'>
