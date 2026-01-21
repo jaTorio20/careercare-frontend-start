@@ -3,7 +3,7 @@ import { getJobApplications } from '@/api/jobApplication/jobApplication'
 import { Link } from '@tanstack/react-router'
 import { StatusBadge } from '@/components/Job-Application/StatusBadge'
 import ProtectedRoute from '@/components/ProtectedRoute'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Plus, Bell } from 'lucide-react'
 import { queryOptions, useMutation, useSuspenseQuery, useQueryClient } from '@tanstack/react-query'
 import type { JobApplicationEntry } from '@/types'
@@ -84,6 +84,9 @@ function JobApplicationPage() {
 
   const [cancelingReminders, setCancelingReminders] = useState<Record<string, boolean>>({});
 
+  const [visibleApplications, setVisibleApplications] = useState(4); // Number of visible applications
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
   const { mutateAsync: cancelReminderAsync } = useMutation({
     mutationFn: async ({ applicationId, reminderId }: { applicationId: string; reminderId: string }) => {
       return cancelReminder(applicationId, reminderId);
@@ -120,6 +123,28 @@ function JobApplicationPage() {
       app.companyName.toLowerCase().includes(searchLower)
     );
   });
+
+  // Lazy load more applications
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleApplications((prev) => Math.min(prev + 4, filteredApplications.length));
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [filteredApplications.length]);
 
   // Pre-fetch reminders for all applications
   const reminders = Object.fromEntries(
@@ -200,7 +225,7 @@ function JobApplicationPage() {
         </p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 ">
-          {filteredApplications.map((jobApplication: JobApplicationEntry) => {
+          {filteredApplications.slice(0, visibleApplications).map((jobApplication: JobApplicationEntry) => {
             const appReminders = reminders[jobApplication._id]?.data;
 
             return (
@@ -287,6 +312,12 @@ function JobApplicationPage() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {visibleApplications < filteredApplications.length && (
+        <div ref={loadMoreRef} className="flex justify-center mt-6">
+          <div className="loader animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-600"></div>
         </div>
       )}
 
