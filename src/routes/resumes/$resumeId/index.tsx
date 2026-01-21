@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
-import { queryOptions, useSuspenseQuery, useMutation } from '@tanstack/react-query'
+import { queryOptions, useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getResume, deleteResume, getDownloadFile} from '@/api/resumes'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
@@ -26,10 +26,12 @@ function ResumeDetailsPage() {
   const {resumeId} = Route.useParams();
   const { data: resume } = useSuspenseQuery(resumeQueryOptions(resumeId));
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   
   const { mutateAsync: deleteMutate, isPending } = useMutation({
     mutationFn: () => deleteResume(resumeId),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['resumes'] }); // Ensure the index page fetches the latest data
       navigate({to: '/resumes'});
       toast.success('Resume deleted successfully!')
     },

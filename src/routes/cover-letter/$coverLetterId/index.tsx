@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { getDetailLetter, deleteCoverLetter } from '@/api/coverLetter'
-import { queryOptions, useSuspenseQuery, useMutation} from '@tanstack/react-query'
+import { queryOptions, useSuspenseQuery, useMutation, useQueryClient} from '@tanstack/react-query'
 import { exportDocx } from '@/utils/exporterDocument'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { toast } from 'sonner'
@@ -44,10 +44,12 @@ function CoverLetterDetailsPage() {
   const {coverLetterId} = Route.useParams();
   const {data: letter} = useSuspenseQuery(coverLetterQueryOptions(coverLetterId))
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {mutateAsync, isPending} = useMutation({
     mutationFn: () => deleteCoverLetter(coverLetterId),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cover-letters'] }); // Ensure the index page fetches the latest data
       navigate({to: '/cover-letter'});
       toast.success('Deleted Successfully!')
     },
