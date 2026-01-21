@@ -11,6 +11,9 @@ import { useDebounce } from '@/hooks/useDebounce'
 import { Suspense } from 'react'
 import ReminderModal from '@/components/Job-Application/Reminders/ReminderModal'
 import { getRemindersByApplication, cancelReminder } from '@/api/jobApplication/jobReminder'
+import SortBy from '@/components/SortBy';
+import SortByLocation from '@/components/Job-Application/SortByLocation';
+import ApplicationsSkeleton from '@/components/Job-Application/JobApplicationSkeleton';
 
 const jobApplicationQueryOptions = () => {
   return queryOptions({
@@ -46,25 +49,6 @@ export const Route = createFileRoute('/applications/')({
   ),
 })
 
-function ApplicationsSkeleton() {
-  return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
-      <div className="flex items-center justify-between mb-8">
-        <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
-        <div className="h-10 w-36 bg-gray-200 rounded animate-pulse" />
-      </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="border border-gray-200 rounded-xl bg-white p-6 shadow-sm">
-            <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse mb-3" />
-            <div className="h-4 w-1/2 bg-gray-200 rounded animate-pulse mb-6" />
-            <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
 
 const useReminders = (applicationId: string) => {
   return useSuspenseQuery({
@@ -86,6 +70,9 @@ function JobApplicationPage() {
 
   const [visibleApplications, setVisibleApplications] = useState(4); // Number of visible applications
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  const [sortOrder, setSortOrder] = useState('latest');
+  const [sortLocation, setSortLocation] = useState('none');
 
   const { mutateAsync: cancelReminderAsync } = useMutation({
     mutationFn: async ({ applicationId, reminderId }: { applicationId: string; reminderId: string }) => {
@@ -114,22 +101,34 @@ function JobApplicationPage() {
     }
   };
 
-  // Filter applications client-side
-  const filteredApplications = applications.filter((app) => {
-    if (!search) return true;
-    const searchLower = search.toLowerCase();
-    return (
-      app.jobTitle.toLowerCase().includes(searchLower) ||
-      app.companyName.toLowerCase().includes(searchLower)
-    );
-  });
+  // Filter and sort applications client-side
+  const sortedApplications = [...applications]
+    .filter((app) => {
+      if (!search) return true;
+      const searchLower = search.toLowerCase();
+      return (
+        app.jobTitle.toLowerCase().includes(searchLower) ||
+        app.companyName.toLowerCase().includes(searchLower)
+      );
+    })
+    .filter((app) => {
+      if (sortLocation === 'none') return true;
+      return app.location.toLowerCase() === sortLocation;
+    })
+    .sort((a, b) => {
+      if (sortOrder === 'latest') {
+        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+      } else {
+        return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+      }
+    });
 
   // Lazy load more applications
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          setVisibleApplications((prev) => Math.min(prev + 4, filteredApplications.length));
+          setVisibleApplications((prev) => Math.min(prev + 2, sortedApplications.length));
         }
       },
       { threshold: 1.0 }
@@ -144,7 +143,7 @@ function JobApplicationPage() {
         observer.unobserve(loadMoreRef.current);
       }
     };
-  }, [filteredApplications.length]);
+  }, [sortedApplications.length]);
 
   // Pre-fetch reminders for all applications
   const reminders = Object.fromEntries(
@@ -198,34 +197,52 @@ function JobApplicationPage() {
         </Link>
       </div>
 
-      <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between relative sm:max-w-sm w-full">
-        <input
-          type="text"
-          value={searchInput}
-          onChange={handleSearchChange}
-          placeholder="Search by job title or company..."
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
-        />
-        
-        {searchInput && (
-          <button
-            type="button"
-            onClick={() => setSearchInput('')}
-            aria-label="Clear search"
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
-          >
-            ✕
-          </button>
-        )}
+      <div className="mb-6 flex flex-col sm:flex-row justify-end gap-3 w-full">
+        {/* Input wrapper */}
+        <div className="relative w-full sm:max-w-sm">
+          <input
+            type="text"
+            value={searchInput}
+            onChange={handleSearchChange}
+            placeholder="Search by job title or company..."
+            className="w-full rounded-lg border border-gray-300 px-4 pr-10 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+          />
+
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => setSearchInput('')}
+              aria-label="Clear search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition p-1"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        {/* Sort dropdown */}
+          <div className="w-full sm:w-auto flex justify-end relative gap-2">
+          <SortBy
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+          />
+
+          {/* Sort by Location */}
+          <SortByLocation
+            sortLocation={sortLocation}
+            setSortLocation={setSortLocation}
+          />
+        </div>
       </div>
 
-      {filteredApplications.length === 0 ? (
+
+      {sortedApplications.length === 0 ? (
         <p className="text-gray-500 text-center">
           {search ? 'No matching applications found.' : 'No applications found.'}
         </p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 ">
-          {filteredApplications.slice(0, visibleApplications).map((jobApplication: JobApplicationEntry) => {
+          {sortedApplications.slice(0, visibleApplications).map((jobApplication: JobApplicationEntry) => {
             const appReminders = reminders[jobApplication._id]?.data;
 
             return (
@@ -315,7 +332,7 @@ function JobApplicationPage() {
         </div>
       )}
 
-      {visibleApplications < filteredApplications.length && (
+      {visibleApplications < sortedApplications.length && (
         <div ref={loadMoreRef} className="flex justify-center mt-6">
           <div className="loader animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-600"></div>
         </div>

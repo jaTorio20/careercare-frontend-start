@@ -5,7 +5,8 @@ import { Link } from '@tanstack/react-router'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { Plus } from 'lucide-react'
 import { ResumeSkeleton } from '@/components/Resume/ResumeSkeleton'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
+import SortBy from '@/components/SortBy'
 
 const resumeQueryOptions = () => {
   return queryOptions({
@@ -42,6 +43,15 @@ export const Route = createFileRoute('/resumes/')({
 
 function ResumesPage() {
   const { data: resumes } = useSuspenseQuery(resumeQueryOptions());
+  const [sortOrder, setSortOrder] = useState('latest');
+
+  const sortedResumes = [...resumes].sort((a, b) => {
+    if (sortOrder === 'latest') {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    } else {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    }
+  });
 
   return (
   <div className="max-w-5xl mx-auto px-2 py-10">
@@ -60,8 +70,13 @@ function ResumesPage() {
       </Link>
     </div>
 
+    {/* Sort By Dropdown */}
+    <div className="flex justify-end mb-6">
+      <SortBy sortOrder={sortOrder} setSortOrder={setSortOrder} />
+    </div>
+
     {/* Empty State */}
-    {resumes.length === 0 ? (
+    {sortedResumes.length === 0 ? (
       <Link 
         to="/resumes/analyze"
         className="flex flex-col items-center justify-center py-16
@@ -76,7 +91,7 @@ function ResumesPage() {
     ) : (
       /* Responsive Grid of Resume Cards */
       <ul className="grid gap-6 sm:grid-cols-2">
-        {resumes.map((resume) => (
+        {sortedResumes.map((resume) => (
           <li
             key={resume._id}
             className="group relative

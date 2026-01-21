@@ -95,8 +95,9 @@ function CoverLetterDetailsPage() {
         shadow-lg">
         {/* Job Info */}
         <div className="space-y-2 p-6">
-          <p className="text-sm md:text-md font-semibold text-gray-900">{letter.jobTitle}</p>
-          <p className="text-sm md:text-md text-gray-700">{letter.companyName}</p>
+          <p className="text-sm md:text-md font-semibold text-gray-900">Job Title: {letter.jobTitle}</p>
+          <p className="text-sm md:text-md text-gray-700">Company: {letter.companyName}</p>
+          <p className="text-sm md:text-md text-gray-700">Job Description: {letter.jobDescription}</p>
         </div>
 
         {/* Cover Letter Content */}
