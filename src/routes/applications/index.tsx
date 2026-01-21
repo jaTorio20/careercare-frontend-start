@@ -68,7 +68,7 @@ function JobApplicationPage() {
 
   const [cancelingReminders, setCancelingReminders] = useState<Record<string, boolean>>({});
 
-  const [visibleApplications, setVisibleApplications] = useState(4); // Number of visible applications
+  const [visibleApplications, setVisibleApplications] = useState(7); // Number of visible applications
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const [sortOrder, setSortOrder] = useState('latest');
