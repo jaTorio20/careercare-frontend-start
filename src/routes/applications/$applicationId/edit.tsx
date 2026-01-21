@@ -112,6 +112,7 @@ function ApplicationEditPage() {
           type="text"
           value={companyName}
           onChange={(e) => setCompanyName(e.target.value)}
+          maxLength={255} 
           required
           className="outline-none
           w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
@@ -125,6 +126,7 @@ function ApplicationEditPage() {
           type="text"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
+          maxLength={255} 
           required
           className="outline-none
           w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
@@ -138,6 +140,7 @@ function ApplicationEditPage() {
           type="url"
           value={jobLink}
           onChange={(e) => setJobLink(e.target.value)}
+          maxLength={2048}
           className="outline-none
           w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
         />
@@ -198,6 +201,7 @@ function ApplicationEditPage() {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={3}
+          maxLength={4000}
           className="outline-none
           w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
         />
@@ -210,6 +214,7 @@ function ApplicationEditPage() {
           type="text"
           value={salaryRange}
           onChange={(e) => setSalaryRange(e.target.value)}
+          maxLength={255}
           className="outline-none
           w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
         />

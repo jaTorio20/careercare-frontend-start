@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { generateCoverLetter, createCoverLetter } from '@/api/coverLetter';
 import type { CoverLetterEntry } from '@/types';
 import CoverLetterEditor from '@/components/cover-letter/CoverLetterEditor';
@@ -28,6 +28,7 @@ function CoverLetterGenerate() {
   const [generatedLetter, setGeneratedLetter] = useState(''); // AI draft
   const [editedLetter, setEditedLetter] = useState('');       // user edits
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (jobDescription) localStorage.setItem("jobDescription", jobDescription)
@@ -95,6 +96,7 @@ function CoverLetterGenerate() {
     mutationFn: createCoverLetter,
     onSuccess: (saved) => {
       console.log("Saved cover letter:", saved);
+      queryClient.invalidateQueries({ queryKey: ['cover-letters'] }); // Ensure the index page fetches the latest data
       handleCancel();
       navigate({ to: "/cover-letter" }); // Back to cover letters list after save
       toast.success('Saved successfully!')
@@ -247,6 +249,7 @@ function CoverLetterGenerate() {
           required
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
+          maxLength={255} 
           className="outline-none
           w-full rounded-md border border-gray-300
           bg-gray-50 p-2 text-gray-700 focus:border-indigo-500
@@ -264,6 +267,7 @@ function CoverLetterGenerate() {
           required
           value={companyName}
           onChange={(e) => setCompanyName(e.target.value)}
+          maxLength={255} 
           className="outline-none
           w-full rounded-md border border-gray-300 bg-gray-50 p-2
           text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-200 transition"

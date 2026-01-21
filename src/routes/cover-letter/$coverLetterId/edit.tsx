@@ -45,6 +45,7 @@ function CoverLetterEditPage() {
     onSuccess: () => {
       // Invalidate the detail query so the next page load is fresh
       queryClient.invalidateQueries({ queryKey: ['cover-letter', coverLetterId] });
+      queryClient.invalidateQueries({ queryKey: ['cover-letters'] }); // Ensure the index page fetches the updated data
       navigate({
         to: '/cover-letter/$coverLetterId',
         params: { coverLetterId: coverLetter._id}
@@ -125,6 +126,7 @@ function CoverLetterEditPage() {
         type="text"
         value={jobTitle}
         onChange={(e) => setJobTitle(e.target.value)}
+        maxLength={255} 
         className="outline-none
         w-full rounded-md border border-gray-300 bg-gray-50 p-3
          text-gray-700 focus:border-indigo-500 focus:ring
@@ -141,6 +143,7 @@ function CoverLetterEditPage() {
         type="text"
         value={companyName}
         onChange={(e) => setCompanyName(e.target.value)}
+        maxLength={255} 
         className="outline-none
         w-full rounded-md border
          border-gray-300 bg-gray-50 p-3 text-gray-700

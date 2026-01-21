@@ -86,9 +86,9 @@ function CoverLetterPage() {
         >
           <Link to={letter._id} className="flex flex-col h-full">
             {/* Job Info */}
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <p className="text-md font-semibold text-gray-900 mb-2">
               {letter.jobTitle || "Untitled Position"}
-            </h3>
+            </p>
             <p className="text-sm text-gray-700 mb-1">
               <span className="font-medium">Company:</span> {letter.companyName}
             </p>

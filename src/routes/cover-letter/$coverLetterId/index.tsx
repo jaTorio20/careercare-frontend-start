@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import NotFound from '@/components/NotFound'
 import ErrorPage from '@/components/ErrorPage'
 import { File, Trash, Pencil, ArrowLeft } from 'lucide-react'
+import DOMPurify from 'dompurify'
 
 const coverLetterQueryOptions = (coverLetterId: string) => {
   return queryOptions({
@@ -62,6 +63,8 @@ function CoverLetterDetailsPage() {
     }
   }
 
+  // Sanitize the HTML content
+  const sanitizedHTML = DOMPurify.sanitize(letter.editedLetter);
 
   return (
     <div className="min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -90,12 +93,11 @@ function CoverLetterDetailsPage() {
         shadow-lg">
         {/* Job Info */}
         <div className="space-y-2 p-6">
-          <p className="text-xl font-semibold text-gray-900">{letter.jobTitle}</p>
-          <p className="text-lg text-gray-700">{letter.companyName}</p>
+          <p className="text-sm md:text-md font-semibold text-gray-900">{letter.jobTitle}</p>
+          <p className="text-sm md:text-md text-gray-700">{letter.companyName}</p>
         </div>
 
         {/* Cover Letter Content */}
-        {/* max-h-[500px] */}
         <div
           className="
             max-w-none bg-gray-50 p-6 rounded-md border border-gray-200
@@ -111,7 +113,7 @@ function CoverLetterDetailsPage() {
             [&_br]:block
           "
         >
-          <div dangerouslySetInnerHTML={{ __html: letter.editedLetter }} />
+          <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
         </div>
 
 
@@ -165,5 +167,5 @@ function CoverLetterDetailsPage() {
       </div>
     </div>
 
-  )
+  );
 }

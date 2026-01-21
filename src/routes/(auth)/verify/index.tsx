@@ -86,6 +86,7 @@ const { mutateAsync: verifyMutate, isPending: isVerifying } = useMutation({
           value={name} 
           onChange={(e) => setName(e.target.value)}
           placeholder='Name'
+          maxLength={100}
           required
           // autoComplete='off' 
           className="w-full border
@@ -100,6 +101,7 @@ const { mutateAsync: verifyMutate, isPending: isVerifying } = useMutation({
           // autoComplete='off'
           required
           minLength={8}
+          maxLength={128}
           className="w-full border
           border-gray outline-none focus:border-blue-700 rounded-md p-2" 
         />

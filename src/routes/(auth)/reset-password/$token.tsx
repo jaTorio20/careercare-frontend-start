@@ -73,6 +73,7 @@ function ResetPasswordPage() {
           value={password}
           required
           minLength={8}
+          maxLength={128}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="New Password"
           className="w-full border border-gray-300 outline-none focus:border-blue-700 rounded-md p-2"

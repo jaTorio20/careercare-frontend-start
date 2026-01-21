@@ -73,7 +73,7 @@ function NewJobApplication() {
   } 
   
     // Text limiting
-  const MAX_LENGTH = 2000; // maximum allowed characters
+  const MAX_LENGTH = 4000; // maximum allowed characters
   const handleJobDescriptionPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault(); 
     const paste = e.clipboardData.getData('text');
@@ -120,6 +120,7 @@ function NewJobApplication() {
           type="text"
           value={companyName}
           onChange={(e) => setCompanyName(e.target.value)}
+          maxLength={255} 
           required
           className="outline-none
           w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
@@ -133,6 +134,7 @@ function NewJobApplication() {
           type="text"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
+          maxLength={255} 
           required
           className="outline-none
           w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
@@ -146,6 +148,7 @@ function NewJobApplication() {
           type="url"
           value={jobLink}
           onChange={(e) => setJobLink(e.target.value)}
+          maxLength={2048} 
           className="outline-none
           w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
         />
@@ -224,6 +227,7 @@ function NewJobApplication() {
           type="text"
           value={salaryRange}
           onChange={(e) => setSalaryRange(e.target.value)}
+          maxLength={255} 
           className="outline-none
           w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
         />

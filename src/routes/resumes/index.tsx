@@ -75,7 +75,7 @@ function ResumesPage() {
       </Link>
     ) : (
       /* Responsive Grid of Resume Cards */
-      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <ul className="grid gap-6 sm:grid-cols-2">
         {resumes.map((resume) => (
           <li
             key={resume._id}
