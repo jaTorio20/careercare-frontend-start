@@ -104,8 +104,21 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
+          "name": "CareerCare",
           "url": "https://careercare-ai-automation.vercel.app",
           "logo": "https://careercare-ai-automation.vercel.app/logo512.png",
+          "sameAs": [
+            "https://www.linkedin.com/in/johntorio"
+          ],
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "email": "johntorio2422@gmail.com",
+              "contactType": "business inquiry",
+              "areaServed": "Worldwide",
+              "availableLanguage": ["English", "Filipino"]
+            }
+          ]
         }),
       },
     ],
