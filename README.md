@@ -2,7 +2,7 @@
 
 CareerCare Frontend is a React application that provides an intuitive interface for job seekers to analyze resumes, generate cover letters, track job applications, and practice interviews with AI assistance.
 
-## Migration: TanStack Router → TanStack Start
+## Migration: TanStack Router (https://github.com/jaTorio20/CareerCare-AI-Dashboard-Frontend) → TanStack Start (https://github.com/jaTorio20/careercare-frontend-start)
 
 This project was **migrated from TanStack Router (SPA) to TanStack Start** to unlock powerful server-side capabilities:
 
