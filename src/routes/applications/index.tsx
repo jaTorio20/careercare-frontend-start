@@ -5,7 +5,7 @@ import { StatusBadge } from '@/components/Job-Application/StatusBadge'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import React, { useState, useEffect, useRef } from 'react'
 import { Plus, Bell } from 'lucide-react'
-import { queryOptions, useMutation, useSuspenseQuery, useQueryClient } from '@tanstack/react-query'
+import { queryOptions, useMutation, useSuspenseQuery, useQueryClient, useQueries } from '@tanstack/react-query'
 import type { JobApplicationEntry } from '@/types'
 import { useDebounce } from '@/hooks/useDebounce'
 import { Suspense } from 'react'
@@ -48,15 +48,6 @@ export const Route = createFileRoute('/applications/')({
     </ProtectedRoute>
   ),
 })
-
-
-const useReminders = (applicationId: string) => {
-  return useSuspenseQuery({
-    queryKey: ['reminders', applicationId],
-    queryFn: () => getRemindersByApplication(applicationId),
-    staleTime: 0, // Ensure fresh data
-  });
-};
 
 function JobApplicationPage() {
   const { data: applications } = useSuspenseQuery(jobApplicationQueryOptions());
@@ -145,9 +136,20 @@ function JobApplicationPage() {
     };
   }, [sortedApplications.length]);
 
-  // Pre-fetch reminders for all applications
+  // Fetch reminders for all applications using useQueries (single hook call)
+  const reminderQueries = useQueries({
+    queries: applications.map((app) => ({
+      queryKey: ['reminders', app._id],
+      queryFn: () => getRemindersByApplication(app._id),
+      staleTime: 0,
+      refetchOnMount: 'always' as const,
+      refetchOnWindowFocus: true,
+    })),
+  });
+
+  // Build reminders object from queries
   const reminders = Object.fromEntries(
-    applications.map((app) => [app._id, useReminders(app._id)])
+    applications.map((app, index) => [app._id, { data: reminderQueries[index]?.data }])
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

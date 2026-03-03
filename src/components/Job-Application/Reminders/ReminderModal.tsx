@@ -30,7 +30,8 @@ const ReminderModal: React.FC<ReminderModalProps> = ({ isOpen, onClose, jobAppli
     mutationFn: createReminder,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['reminders', jobApplication.jobApplicationId] });
-      navigate({ to: '/applications' });
+      await queryClient.refetchQueries({ queryKey: ['reminders', jobApplication.jobApplicationId] });
+      onClose();
       toast.success('Added successfully!');
     }
   });
@@ -55,7 +56,6 @@ const ReminderModal: React.FC<ReminderModalProps> = ({ isOpen, onClose, jobAppli
         remindBefore,
         message,
       });
-      onClose();
     } catch (err) {
       const errorMessage = (err as any).response?.data?.error || 'Failed to create reminder. Please try again.'; // Type assertion for error
       toast.error(errorMessage);
