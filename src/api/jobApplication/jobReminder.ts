@@ -10,7 +10,7 @@ export const createReminder = async (entry: CreateReminderInput): Promise<Remind
 // Fetch reminders for a specific job application
 export const getRemindersByApplication = async (applicationId: string): Promise<Reminder[]> => {
   const { data } = await api.get(`/job-application/${applicationId}/reminders`);
-  return data;
+  return data.reminders;  // Backend returns { reminders: [], pagination: {} }
 };
 
 // Cancel a specific reminder
